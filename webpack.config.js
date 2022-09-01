@@ -9,7 +9,7 @@ module.exports = function (env) {
   return {
     mode: MODE,
     entry: {
-      verification: './verification.ts'
+      certification: './certification.ts'
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -39,14 +39,6 @@ module.exports = function (env) {
       new HtmlWebpackPlugin({
         filename: 'index.html',
         template: './index.html'
-      }),
-      new HtmlWebpackPlugin({
-        filename: 'json-hash-verification.html',
-        template: './json-hash-verification.html'
-      }),
-      new HtmlWebpackPlugin({
-        filename: 'form-verification.html',
-        template: './form-verification.html'
       }),
       new CleanWebpackPlugin(),
     ],
