@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "ok": true,
+  "data": {
+    "status": 200,
+    "headers": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Date": [
+        "Wed, 31 Aug 2022 15:08:43 GMT"
+      ],
+      "Content-Length": [
+        "826"
+      ]
+    },
+    "body": {
+      "hash": "0v734QGIdiEZkRd8PQUr9dx1qbsZnSJvCcqmRnCxZdo=",
+      "upp": "lSLEEFjc3bREqFSCqXOVVBOUwLoAxCDS/vfhAYh2IRmRF3w9BSv13HWpuxmdIm8JyqZGcLFl2sRADHd7gzzHfymMRidmHGvXOjJ9Ej4AeHKi+EiWBMlYkScQS9BsKiQHOGlHWyNQP5r3OF9/hturj0YWNEE6LfB5ZQ==",
+      "publicKey": "l70RXGlqRyfadF3smheLb1sWc0gWLcwin4690H3DdEYwK8wAy1dga126dKd7Z5LKgQOcYk9g/Y+9ejmZvHXaRw==",
+      "response": {
+        "statusCode": 200,
+        "header": {
+          "Content-Length": [
+            "121"
+          ],
+          "Content-Type": [
+            "application/octet-stream"
+          ],
+          "Date": [
+            "Wed, 31 Aug 2022 15:08:42 GMT"
+          ],
+          "Server": [
+            "ubirch-trust-service/1.0"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ]
+        },
+        "content": "lSLEEJ08eP8i80RBpdGFxjbUhv8AxCAjCiiyVn1MOoHSMdYyLG+XAAAAAAAAAAAAAAAAAAAAAMRA9ISHLVKGvpDeoh/RPqPxfKMb90/8iNGwuXQOxSOiv7wuSKYQ1v7BKi/7ci0C8WtSO36djp/ACOxaHoOzuL73qA=="
+      },
+      "requestID": "230a28b2-567d-4c3a-81d2-31d6322c6f97"
+    }
+  }
+}
