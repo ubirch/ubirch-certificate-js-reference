@@ -1,6 +1,7 @@
 import { encode, decode }  from '@msgpack/msgpack';
 import { createHash } from 'crypto';
 import * as zlib from 'zlib';
+import * as base45 from 'base45';
 import * as testresp from './testdata/testresp.json';
 
 const stage = 'dev';
@@ -39,11 +40,16 @@ async function certify (jsonPayload) {
 
     // TODO: create packed version: C01:BASE45_STRING(COMPRESS_ZLIB(NEW UPP))
     const packaged = createPackedVersion(msgPackUpp);
+    displaySignedUpp(packaged);
 
   } catch (err) {
     console.log('ERROR!!!!!!!!')
     console.log(err.message)
   }
+}
+
+async function verify (packedSignedUpp) {
+  console.log('start verification with: ' + packedSignedUpp);
 }
 
 function getMsgPackPayload (jsonPayload) {
@@ -155,22 +161,29 @@ function replaceHashByMsgPackInUpp(hashUpp: string, msgPackPayload: Uint8Array) 
 
 function createPackedVersion(msgPackUpp: Uint8Array) {
   // TODO: ZLIB compress the UPP
-  console.log(msgPackUpp);
-//  const zlibbed_upp = zlib.deflateSync(msgPackUpp);
-//  console.log(zlibbed_upp);
+  const buf = Buffer.from(msgPackUpp);
+ const zlibbed_upp = zlib.deflateSync(buf);
 
   // TODO: base45 encode the zlibed UPP with prefix (<prefix>:<base_45_zlibbed_upp>)
-
+  const base45ed_upp = base45.encode(zlibbed_upp);
 
   // TODO: create packed version: C01:BASE45_STRING(COMPRESS_ZLIB(NEW UPP))
-  return undefined;
+  return CERT_PREFIX + base45ed_upp;
 }
 
 function uInt8Array2Hex(val: Uint8Array) {
   return Buffer.from(val).toString('hex');
 }
 
-// test hash button click listener
-document.getElementById('json-test').addEventListener('click', function () {
+function displaySignedUpp(signedUpp) {
+  (document.getElementById('signed-upp-output')as HTMLTextAreaElement).value = signedUpp;
+}
+// start certification button click listener
+document.getElementById('start-certification').addEventListener('click', function () {
   certify((document.getElementById("json-input") as HTMLTextAreaElement).value);
+});
+
+// start verification button click listener
+document.getElementById('start-verification').addEventListener('click', function () {
+  verify((document.getElementById("signed-upp-output") as HTMLTextAreaElement).value);
 });
