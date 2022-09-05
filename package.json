@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@msgpack/msgpack": "^2.7.2",
+    "@ubirch/ubirch-protocol-verifier": "^0.0.9",
     "@ubirch/ubirch-verification-js": "^1.5.3",
     "base45": "^2.0.1",
     "browserify-zlib": "^0.2.0",

@@ -3,8 +3,10 @@ import { createHash } from 'crypto';
 import * as zlib from 'zlib';
 import * as base45 from 'base45';
 import * as testresp from './testdata/testresp.json';
+import environment from './environment';
+import UbirchProtocol from '@ubirch/ubirch-protocol-verifier/src/upp';
 
-const stage = 'dev';
+const stage = 'demo';
 
 async function certify (jsonPayload) {
   try {
@@ -122,7 +124,7 @@ async function certifyHash (hash) {
     headers: {
       'Content-type': 'text/plain',
       'X-UPP-Type-Id': 'signed',
-      'X-Identity-Id': '58dcddb4-44a8-5482-a973-95541394c0ba'
+      'X-Identity-Id': environment.stage[stage].device
     }
   };
 
@@ -187,7 +189,7 @@ async function verifyHash (hash) {
 
       switch (response.status) {
         case 200: {
-          return response.json();
+          return verifyUpp(response.json());
         }
         case 404: {
           throw new Error('Something cannot be found');
@@ -212,6 +214,22 @@ async function verifyHash (hash) {
         }
       }
     });
+}
+
+function verifyUpp(resp: any) {
+  try {
+    const body = resp.data.body;
+    const signature = body.publicKey;
+    const upp = body.upp;
+    if (UbirchProtocol.verify(signature, upp)) {
+      return resp;
+    } else {
+      throw new Error("Verification Failed!!!");
+    }
+
+  } catch (err) {
+    throw new Error(err.message)
+  }
 }
 
 function getSignatureAndUppFromResp(resp: any): [ string, string ] {
