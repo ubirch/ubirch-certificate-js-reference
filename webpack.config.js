@@ -13,7 +13,8 @@ module.exports = function (env) {
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: '[name].js'
+      filename: '[name].js',
+      libraryTarget: 'umd'
     },
     module: {
       rules: [
@@ -40,7 +41,7 @@ module.exports = function (env) {
         filename: 'index.html',
         template: './index.html'
       }),
-      new CleanWebpackPlugin(),
+      new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     ],
     devServer: {
       static: path.join(__dirname, 'dist'),
