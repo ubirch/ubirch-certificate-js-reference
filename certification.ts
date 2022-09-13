@@ -40,10 +40,10 @@ async function certify (jsonPayload) {
       updateLog(hash);
 
     // TODO: Send hash to UCC
-    //  const resp = await certifyHash(hash);
-    //  log('Hash has been anchored');
-      const resp = getTestResp();
-      updateLog('!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION - Testresponse !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+     const resp = await certifyHash(hash);
+    updateLog('Hash has been anchored');
+      // const resp = getTestResp();
+      // updateLog('!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION - Testresponse !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       updateLog(resp.toString());
 
     // TODO: extract hash and signature from UPP
