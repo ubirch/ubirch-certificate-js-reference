@@ -1,0 +1,5 @@
+title: UBIRCH-CERTIFICATION-JS
+description: A JavaScript package to certify UBIRCH Protocol Packages (UPPs)
+remote_theme: ubirch/ubirch-docu-theme@main
+plugins:
+  - jekyll-remote-theme

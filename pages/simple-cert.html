@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simple Ubirch Certification</title>
+</head>
+<body>
+<div id="form-area">
+  <div class="section">
+    <div class="input-field" style="padding: 10px;">
+      <label for="simple-json-input">JSON:</label><br>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="simple-json-input">{"dob":"19671215","id":"44","name":"Muster, Max"}</textarea>
+    </div>
+    <button id="simple-start-certification">
+      Test certification
+    </button>
+  </div>
+  <div class="section">
+    <div class="input-field" style="padding: 10px;">
+      <label for="simple-signed-upp-output">signed UPP:</label><br>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="simple-signed-upp-output"></textarea>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+<script src="https://unpkg.com/@ubirch/ubirch-certification-js/dist/index.js"></script>
+<script>
+  const EUbirchCertificationStateKeys = {
+    CERTIFICATION_PENDING: "CERTIFICATION_PENDING",
+      CERTIFICATION_FAILED: "CERTIFICATION_FAILED",
+      CERTIFICATION_SUCCESSFUL: "CERTIFICATION_SUCCESSFUL",
+      CERTIFICATION_STATE_UNDEFINED: "CERTIFICATION_STATE_UNDEFINED"
+  };
+
+  let ubirchCertification;
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // create UbirchCertification instance
+    ubirchCertification = new window.UbirchCertification({
+      deviceId: '<YOUR_DEVICE_UUID>',
+      stage: '<USED_STAGE>'
+    });
+  });
+
+  // test hash button click listener
+  document.getElementById('simple-start-certification').addEventListener('click', function () {
+    console.log('CLICK');
+    if (ubirchCertification) {
+      ubirchCertification.certifyJson(document.getElementById('simple-json-input').value)
+        .then(resp => displayCertificationResult(resp));
+    }
+  });
+
+  function displayCertificationResult(resp) {
+    if (resp.certificationState === EUbirchCertificationStateKeys.CERTIFICATION_FAILED) {
+      (document.getElementById('simple-signed-upp-output')).value =
+        "#################### CERTIFICATION_FAILED #####################\n"  +
+        resp.failed.code +
+        resp.failed.message ? "\n" + resp.failed.message : '';
+    } else {
+      (document.getElementById('simple-signed-upp-output')).value = resp.upp.upp;
+    }
+  }
+</script>
+</body>
+</html>

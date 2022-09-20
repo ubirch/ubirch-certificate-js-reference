@@ -41,6 +41,14 @@ module.exports = function (env) {
         filename: 'index.html',
         template: './index.html'
       }),
+      new HtmlWebpackPlugin({
+        filename: 'simple-cert.html',
+        template: './pages/simple-cert.html'
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'cert-and-verify.html',
+        template: './pages/cert-and-verify.html'
+      }),
       new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     ],
     devServer: {

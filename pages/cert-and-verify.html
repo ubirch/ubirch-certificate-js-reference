@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simple Ubirch Certification</title>
+  <style>
+    .section {
+      margin: 10px;
+    }
+
+    button {
+      margin: 10px 0;
+      padding: 7px;
+      background-color: black;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<div id="form-area">
+  <div class="section">
+    <div class="input-field" style="padding: 10px;">
+      <label for="json-input">JSON:</label><br>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="json-input">
+{
+	"id": "0001",
+	"type": "donut",
+	"name": "Cake",
+	"ppu": 0.55,
+	"batters":
+		{
+			"batter":
+				[
+					{ "id": 1001, "type": "Regular" },
+					{ "id": 1002, "type": "Chocolate" },
+					{ "id": 1003, "type": "Blueberry" },
+					{ "id": 1004, "type": "Cherries" }
+				]
+		},
+	"topping":
+		[
+			{ "id": 5001, "type": "None" },
+			{ "id": 5002, "type": "Glazed" },
+			{ "id": 5005, "type": "Sugar" },
+			{ "id": 5007, "type": "Powdered Sugar" },
+			{ "id": 5006, "type": "Chocolate with Sprinkles" },
+			{ "id": 5003, "type": "Chocolate" },
+			{ "id": 5004, "type": "Maple" }
+		]
+}</textarea>
+    </div>
+    <button id="start-certification">
+      Test certification
+    </button>
+  </div>
+  <div class="section">
+    <div class="input-field" style="padding: 10px;">
+      <label for="signed-upp-output">signed UPP:</label><br>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="signed-upp-output"></textarea>
+    </div>
+    <button id="start-verification">
+      Test verification
+    </button>
+  </div>
+  <div class="input-field">
+    <label for="log">Log:</label><br>
+    <textarea rows="10" cols="80" placeholder="" type="text" id="log"></textarea>
+  </div>
+  <div class="input-field">
+    <label for="output">Output:</label><br>
+    <textarea rows="10" cols="80" placeholder="" type="text" id="output"></textarea>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+</body>
+</html>

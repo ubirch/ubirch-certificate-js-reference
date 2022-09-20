@@ -2,7 +2,7 @@
 
 A reference implementation for creating and verifying UBIRCH self-contained certificates in JavaScript/TypeScript.
 
-Here you can find a collection of different examples of creating UBIRCH Protocol Packages (UPP) certificates and 
+Here you can find a collection of different examples of creating UBIRCH Protocol Packages (UPP) certificates and
 verifying them.
 
 Currently the following types of UPPs can be created by the
@@ -12,7 +12,7 @@ Currently the following types of UPPs can be created by the
 
 ## Specification
 
-![UBIRCH self-contained certificate specification](docs/ubirch_certificate-Certificate-Spec.png)
+![UBIRCH self-contained certificate specification](ubirch_certificate-Certificate-Spec.png)
 
 ## Run this project
 
@@ -21,10 +21,10 @@ Currently the following types of UPPs can be created by the
 1. You need [Node and NPM been installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your system.
 
 2. You need to contact the UBIRCH Support support@ubirch.com to get
-   1. client certificate
-   2. identity UUID
-   3. access token
-   4. stage (normally stage for tests will be DEMO)
+  1. client certificate
+  2. identity UUID
+  3. access token
+  4. stage (normally stage for tests will be DEMO)
 
 3. Install the client certificate on your computer.
 
@@ -35,7 +35,6 @@ Currently the following types of UPPs can be created by the
       token: '<YOUR_DEMO_VERIFICATION_TOKEN>'
       stage: '<USED_STAGE_OF_UBIRCH_SYSTEM>'
 ```
-
 
 ### Run NPM project locally with Webpack Dev Server
 
@@ -72,7 +71,7 @@ This folder can be safely moved to any other location after the build, according
 
 ### Certificate Creation Process
 
-![UBIRCH certificate creation process](docs/ubirch_certificate-Certification-Process.png)
+![UBIRCH certificate creation process](ubirch_certificate-Certification-Process.png)
 
 The resulting certificate will look like this:
 
@@ -97,6 +96,6 @@ to verify the created unchained UPP. For more documentation and details about ve
 
 ### Certificate Verification Process
 
-![UBIRCH certificate verification process](docs/ubirch_certificate-Verification-Process.png)
+![UBIRCH certificate verification process](ubirch_certificate-Verification-Process.png)
 
 [^1]: Contact support@ubirch.com to get a client certificate, identity UUID and access token.
