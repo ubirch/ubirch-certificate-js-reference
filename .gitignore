@@ -3,3 +3,5 @@
 /node_modules/
 /certs/
 /environment_personal.ts
+/environment.demo.ts
+/environment.dev.ts

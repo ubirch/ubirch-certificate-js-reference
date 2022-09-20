@@ -1,85 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Simple Ubirch Certification</title>
-  <style>
-    .section {
-      margin: 10px;
-    }
-
-    button {
-      margin: 10px 0;
-      padding: 7px;
-      background-color: black;
-      color: white;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ubirch Certificate Reference</title>
 </head>
 <body>
-<div id="form-area">
-  <div class="section">
-    Stage:
-    <input type="radio" id="dev-stage" name="stage" value="dev" checked>
-    <label for="dev-stage">DEV</label>
-    <input type="radio" id="demo-stage" name="stage" value="demo">
-    <label for="demo-stage">DEMO</label>
-  </div>
-  <div class="section">
-    <div class="input-field" style="padding: 10px;">
-      <label for="json-input">JSON:</label><br>
-      <textarea rows="10" cols="80" placeholder="" type="text" id="json-input">
-{
-	"id": "0001",
-	"type": "donut",
-	"name": "Cake",
-	"ppu": 0.55,
-	"batters":
-		{
-			"batter":
-				[
-					{ "id": 1001, "type": "Regular" },
-					{ "id": 1002, "type": "Chocolate" },
-					{ "id": 1003, "type": "Blueberry" },
-					{ "id": 1004, "type": "Cherries" }
-				]
-		},
-	"topping":
-		[
-			{ "id": 5001, "type": "None" },
-			{ "id": 5002, "type": "Glazed" },
-			{ "id": 5005, "type": "Sugar" },
-			{ "id": 5007, "type": "Powdered Sugar" },
-			{ "id": 5006, "type": "Chocolate with Sprinkles" },
-			{ "id": 5003, "type": "Chocolate" },
-			{ "id": 5004, "type": "Maple" }
-		]
-}</textarea>
-    </div>
-    <button id="start-certification">
-      Test certification
-    </button>
-  </div>
-  <div class="section">
-    <div class="input-field" style="padding: 10px;">
-      <label for="signed-upp-output">signed UPP:</label><br>
-      <textarea rows="10" cols="80" placeholder="" type="text" id="signed-upp-output"></textarea>
-    </div>
-    <button id="start-verification">
-      Test verification
-    </button>
-  </div>
-  <div class="input-field">
-    <label for="log">Log:</label><br>
-    <textarea rows="10" cols="80" placeholder="" type="text" id="log"></textarea>
-  </div>
-  <div class="input-field">
-    <label for="output">Output:</label><br>
-    <textarea rows="10" cols="80" placeholder="" type="text" id="output"></textarea>
-  </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+<h1>Ubirch Certificate Reference</h1>
+<p>Here you can find a collection of different examples of creating UBIRCH Protocol Packages (UPP) certificates and
+verifying them.</p>
+
+<p>
+  Currently the following types of UPPs can be created by the
+  [@ubirch/ubirch-certification-js](https://www.npmjs.com/package/@ubirch/ubirch-certification-js):
+</p>
+
+<ul>
+  <li>SIGNED</li>
+</ul>
+<ul>
+  <li>
+    <p>
+    <a href="./simple-cert.html">Simplest example for creation of a signed UPP.</a>
+    </p>
+    <p>To execute this example you need to add your device and stage directly to the script inside of /pages/simple-cert.html</p>
+    <pre>
+ubirchCertification = new window.UbirchCertification({
+    deviceId: '&lt;YOUR_DEVICE_UUID&gt;',
+    stage: '&lt;USED_STAGE&gt;'
+});
+    </pre>
+  </li>
+  <li>
+    <p>
+      <a href="./cert-and-verify.html">Example for creation of a signed UPP and verifying it</a>
+    </p>
+    <p>To execute this example you need to add your device, token and stage to environment.ts</p>
+  </li>
+</ul>
 </body>
 </html>
