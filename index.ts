@@ -1,19 +1,13 @@
-import { createHash } from 'crypto';
-import { decode }  from '@msgpack/msgpack';
-import * as zlib from 'zlib';
-import * as base45 from 'base45';
-import environment from './environment';
-import { UbirchVerification, EUbirchHashAlgorithms, EUbirchStages } from "./node_modules/@ubirch/ubirch-verification-js";
-import { IUbirchCertificationResult, UbirchCertification, EUbirchCertificationStateKeys } from '@ubirch/ubirch-certification-js';
+import { EUbirchCertificationStateKeys, IUbirchCertificationResult, UbirchCertification } from '@ubirch/ubirch-certification-js';
+import { EUbirchVerificationStateKeys, IUbirchVerificationResult } from '@ubirch/ubirch-verification-js';
+import environment from './environment.dev';
+import { EUbirchHashAlgorithms, EUbirchStages, UbirchVerification } from './node_modules/@ubirch/ubirch-verification-js';
 
 let ubirchCertification;
 let ubirchVerification;
 let certSubscription = null;
 let verifySubscription = null;
 let selectedHashAlgo = EUbirchHashAlgorithms.SHA256;
-
-const CERT_HINT = 0xEE
-const CERT_PREFIX = "C01:"
 
 function setupUbirchCertification() {
   ubirchCertification = new UbirchCertification({
@@ -24,7 +18,7 @@ function setupUbirchCertification() {
   if (!certSubscription) certSubscription = ubirchCertification.messenger.subscribe(updateLog);
 }
 
-async function certify (jsonPayload) {
+async function certify (jsonPayload: string) {
   try {
     if (!jsonPayload) {
       throw new Error('No JSON data inserted');
@@ -88,80 +82,27 @@ async function verify (packedSignedUpp: string) {
         setupUbirchVerification();
       }
 
-      // TODO: check prefix of upp
-      if (! packedSignedUpp.startsWith(CERT_PREFIX)) {
-        throw new Error('Verification Failed!! Wrong Prefix!!!!');
-      }
-
-      // TODO: unpack UPP with msgpack payload
-      const msgPackUpp = unpackSignedUpp(packedSignedUpp);
-      updateLog(msgPackUpp.toString());
-
-      // TODO check type of upp
-      if (!checkUppType(msgPackUpp, CERT_HINT)) {
-        throw new Error('Verification failed!!!! - wrong type of upp!!');
-      }
-
-      // TODO: extract signature and check it (not in v0 but later)
-
-      // TODO: extract the messagepack payload
-      const msgpackPayload = getMsgPackPayloadFromUpp(msgPackUpp);
-      updateLog(uInt8Array2Hex(msgpackPayload));
-
-      // TODO: extract data from msgpack payload
-
-      // TODO: schema validation of extracted data
-      // TODO: display extracted data
-
-      // TODO: hash it (sha256)
-      const hash = getHashedPayload(msgpackPayload);
-      updateLog(hash);
-
       // TODO: send it to the verify endpoint and check response
-      const resp = await ubirchVerification.verifyHash(hash);
-
-      // TODO: show verification result
-      //  TODO: handle that signed upps will never be anchored in any blockchains
-      displayVerificationResult(resp);
+      const resp = ubirchVerification
+        .verifyUPP(packedSignedUpp)
+        .then((response) => {
+          updateLog(response);
+          displayVerificationResult(response)
+        });
 
   } catch (err) {
-      updateLog('ERROR!!!!!!!!')
-      updateLog(err.message)
+    const msg =
+      'Verification failed!!\n\nErrorResponse:\n' + JSON.stringify(err, null, 2);
+    updateLog(msg);
+    displayVerificationResult({
+      verificationState: EUbirchVerificationStateKeys.VERIFICATION_FAILED,
+      failed: {
+        code: err.code,
+        errorBECodes: err.errorBECodes,
+        message: err.message
+      }
+    } as IUbirchVerificationResult);
   }
-}
-
-function getHashedPayload (payload) {
-  return createHash('sha256').update(payload).digest('base64');
-}
-
-function unpackSignedUpp(packedUpp: string) {
-  // TODO: remove prefix
-  const upp_withoutPrefix = packedUpp.replace(new RegExp("^" + CERT_PREFIX), '');
-
-  // TODO: base45 decode the STRING without prefix
-  const unBase45ed_upp = base45.decode(upp_withoutPrefix);
-
-  // TODO: ZLIB decompress the result
-  return zlib.inflateSync(unBase45ed_upp);
-}
-
-function checkUppType(msgPackUpp: Buffer, type: any) {
-  const unpackedUpp: any[] = decode(msgPackUpp) as any[];
-  const len = unpackedUpp.length;
-  const uppType = unpackedUpp[len-3];
-  return uppType === type;
-}
-
-
-function getMsgPackPayloadFromUpp(msgPackUpp: Buffer) {
-   const unpackedUpp: any[] = decode(msgPackUpp) as any[];
-   const len = unpackedUpp.length;
-   const msgpackPayload = unpackedUpp[len-2];
-  return msgpackPayload;
-}
-
-function uInt8Array2Hex(val: Uint8Array) {
-  return Buffer.from(val).toString('hex');
 }
 
 function displayVerificationResult(resp: any) {
@@ -187,12 +128,19 @@ function updateLog(message: string) {
   (document.getElementById('log')as HTMLTextAreaElement).value =
     JSON.stringify(message, null, 2) + "\n\n" + (document.getElementById('log')as HTMLTextAreaElement).value;
 }
+
 // start certification button click listener
-document.getElementById('start-certification').addEventListener('click', function () {
-  certify((document.getElementById("json-input") as HTMLTextAreaElement).value);
-});
+if (document.getElementById('start-certification')) {
+  document.getElementById('start-certification').addEventListener('click', function () {
+    certify((document.getElementById("json-input") as HTMLTextAreaElement).value);
+  });
+
+}
 
 // start verification button click listener
-document.getElementById('start-verification').addEventListener('click', function () {
-  verify((document.getElementById("signed-upp-output") as HTMLTextAreaElement).value);
-});
+if (document.getElementById('start-verification')) {
+  document.getElementById('start-verification').addEventListener('click', function () {
+    verify((document.getElementById("signed-upp-output") as HTMLTextAreaElement).value);
+  });
+
+}

@@ -14,6 +14,16 @@ Currently the following types of UPPs can be created by the
 
 ![UBIRCH self-contained certificate specification](ubirch_certificate-Certificate-Spec.png)
 
+## Demo
+
+Here you can find a simple working demo:
+
+[cert-and-verify-demo](cert-and-verify-demo.html)
+
+**Prerequisites!!**
+You need to contact the UBIRCH Support support@ubirch.com to get identity UUID, verification token and client certificate.
+See Prerequisites for running this project!
+
 ## Run this project
 
 ### Prerequisites

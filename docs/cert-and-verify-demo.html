@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ubirch Certification and Verification Reference Implementation</title>
+  <style>
+    .section {
+      margin: 10px;
+    }
+    button {
+      margin: 10px 0; padding: 7px; background-color: black; color: white;
+    }
+    .hidden {
+      visibility: hidden;
+      height: 0px;
+    }
+    .logtext {
+      background-color: black;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<div id="setup-area">
+  <div class="section" style="margin-bottom: 40px;">
+    <p>
+      You need to contact the UBIRCH Support support@ubirch.com to get:
+      <ul>
+        <li>client certificate</li>
+        <li>identity UUID</li>
+        <li>verification access token</li>
+        <li>stage (normally stage for tests will be DEMO)</li>
+      </ul>
+    </p>
+  </div>
+  <div class="section">
+    Stage:
+    <input type="radio" id="dev-stage" name="stage" value="dev" onchange="changeStage(this);" checked>
+    <label for="dev-stage">DEV</label>
+    <input type="radio" id="demo-stage" name="stage" value="demo" onchange="changeStage(this);">
+    <label for="demo-stage">DEMO</label>
+    <input type="radio" id="qa-stage" name="stage" value="qa" onchange="changeStage(this);">
+    <label for="qa-stage">QA</label>
+    <input type="radio" id="prod-stage" name="stage" value="prod" onchange="changeStage(this);">
+    <label for="prod-stage">PROD</label>
+  </div>
+  <div class="section">
+    <div class="input-field">
+      <label for="device-id-input">Identity UUID (deviceId) of UBIRCH thing:</label><br>
+      <textarea rows="1" cols="80" placeholder="" type="text" id="device-id-input"></textarea
+      >
+    </div>
+  </div>
+  <div class="section">
+    <div class="input-field">
+      <label for="token-input">UBIRCH verification token:</label><br>
+      <textarea rows="6" cols="80" placeholder="" type="text" id="token-input">eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Rva2VuLmRldi51YmlyY2guY29tIiwic3ViIjoiYzBiNTc3ZmItMWNlZi00YzZmLThjNTAtOGQzYTFlNmVhNzUzIiwiYXVkIjoiaHR0cHM6Ly92ZXJpZnkuZGV2LnViaXJjaC5jb20iLCJleHAiOjE2NzI0ODQ3NDgsImlhdCI6MTYzOTQ3OTk4NywianRpIjoiMTJlOWI0YTItMGU2Zi00ZGI5LWJjNjgtMDMwNDM1MjhmZDkzIiwic2NwIjpbInVwcDp2ZXJpZnkiXSwicHVyIjoiMjAyMiBEZWZhdWx0IFRlc3QgV2lsZGNhcmQgVG9rZW4iLCJ0Z3AiOltdLCJ0aWQiOlsiKiJdLCJvcmQiOltdfQ.MYTjEHGNG-BT_rdJtSXwfbFZZ53gtjWRbUc7iZlVNv0YPmVOVtQ5U_xUPJV5l7WDvyFrhqAnh5TtVvmo4j3oew</textarea>
+    </div>
+    <button id="setup">Setup UBIRCH certification and verification</button>
+  </div>
+</div>
+<div id="form-area" class="hidden">
+  <div class="section">
+    <div class="input-field" style="padding: 10px;">
+      <label for="simple-json-input">JSON:</label><br>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="simple-json-input">{"dob":"19671215","id":"44","name":"Muster, Max"}</textarea>
+    </div>
+    <button id="simple-start-certification">
+      Create Certificate
+    </button>
+  </div>
+  <div class="section">
+    <div class="input-field" style="padding: 10px;">
+      <label for="simple-signed-upp-output">signed UPP:</label><br>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="simple-signed-upp-output"></textarea>
+    </div>
+  </div>
+  <div class="section">
+    <button id="simple-start-verification">
+      Start Verification
+    </button>
+    <div class="input-field" style="padding: 10px;">
+      <label for="simple-signed-upp-output">Verification Result:</label><br>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="simple-signed-upp-verification-output"></textarea>
+    </div>
+  </div>
+  <div class="section">
+    <div class="input-field">
+      <label for="log">Log:</label><br>
+      <textarea rows="20" cols="80" placeholder="" type="text" id="log" class="logtext"></textarea>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+<script src="https://unpkg.com/@ubirch/ubirch-certification-js/dist/index.js"></script>
+<script src="https://unpkg.com/@ubirch/ubirch-verification-js/dist/index.js"></script>
+<script>
+  const EUbirchCertificationStateKeys = {
+    CERTIFICATION_PENDING: "CERTIFICATION_PENDING",
+      CERTIFICATION_FAILED: "CERTIFICATION_FAILED",
+      CERTIFICATION_SUCCESSFUL: "CERTIFICATION_SUCCESSFUL",
+      CERTIFICATION_STATE_UNDEFINED: "CERTIFICATION_STATE_UNDEFINED"
+  };
+
+  let initialized = false;
+  let ubirchCertification;
+  let ubirchVerification;
+  let certSubscription = null;
+  let verifySubscription = null;
+
+  const devStage = {
+    dev: 'dev',
+    demo: 'demo',
+    qa: 'qa',
+    prod: 'prod'
+  }
+  let selectedStage = devStage.dev;
+
+  function setupUbirchCertification() {
+      const deviceId = (document.getElementById('device-id-input')).value;
+      if (deviceId) {
+        ubirchCertification = new window.UbirchCertification({
+          deviceId: deviceId,
+          stage: selectedStage,
+        });
+        (document.getElementById('log')).value = '';
+        if (!certSubscription) certSubscription = ubirchCertification.messenger.subscribe(updateLog);
+      } else {
+        throw new Error(`DeviceId of stage ${selectedStage} not set!\n`);
+      }
+  }
+
+  function setupUbirchVerification() {
+      const token = document.getElementById('token-input').value;
+      if (token) {
+        ubirchVerification = new window.UbirchVerification({
+          stage: selectedStage,
+          accessToken: token
+        });
+        (document.getElementById('log')).value = '';
+        if (!verifySubscription) verifySubscription = ubirchVerification.messenger.subscribe(updateLog);
+      } else {
+        throw new Error(`Token of stage ${selectedStage} not set!\n`);
+      }
+  }
+
+  function setup() {
+      try {
+        setupUbirchCertification();
+        setupUbirchVerification();
+        setFormVisibility(true);
+      } catch (e) {
+        window.alert(e.message);
+      }
+    }
+
+  document.getElementById('setup').addEventListener('click', function () {
+    setup();
+  });
+
+  document.getElementById('simple-start-certification').addEventListener('click', function () {
+    const certData = document.getElementById('simple-json-output').value;
+    if (!certData) {
+      window.alert('Please insert data to create certificate')
+    }
+    if (ubirchCertification) {
+      ubirchCertification.certifyJson(certData)
+        .then(resp => displayCertificationResult(resp));
+    } else {
+      window.alert('Something went wrong with the certification setup!!! Please reload the page and try again.')
+    }
+  });
+
+  document.getElementById('simple-start-verification').addEventListener('click', function () {
+    const certValue = document.getElementById('simple-signed-upp-output').value;
+    if (!certValue) {
+      window.alert('Please insert or create certificate for verification')
+    }
+    if (ubirchVerification) {
+      ubirchVerification
+        .verifyUPP(certValue)
+        .then(resp => displayVerificationResult(resp));
+    } else {
+      window.alert('Something went wrong with the verification setup!!! Please reload the page and try again.')
+    }
+  });
+
+  function displayCertificationResult(resp) {
+    if (resp.certificationState === EUbirchCertificationStateKeys.CERTIFICATION_FAILED) {
+      (document.getElementById('simple-signed-upp-output')).value =
+        "#################### CERTIFICATION_FAILED #####################\n"  +
+        resp.failed.code +
+        resp.failed.message ? "\n" + resp.failed.message : '';
+    } else {
+      (document.getElementById('simple-signed-upp-output')).value = resp.upp.upp;
+    }
+  }
+
+  function displayVerificationResult(resp) {
+    let result = "#################### RESULT #####################\n";
+    result += JSON.stringify(resp);
+    (document.getElementById('simple-signed-upp-verification-output')).value = result;
+  }
+
+  function updateLog(message) {
+    console.log(message);
+
+    (document.getElementById('log')).value =
+      JSON.stringify(message, null, 2) + "\n\n" + (document.getElementById('log')).value;
+  }
+
+  function changeStage(elem) {
+    console.log(elem.value);
+    selectedStage = devStage[elem.value];
+  }
+
+  function setFormVisibility(visible) {
+    initialized = visible;
+    if (initialized) {
+      document.getElementById("setup-area").className = "hidden";
+      document.getElementById("form-area").className = "";
+    } else {
+      document.getElementById("setup-area").className = "";
+      document.getElementById("form-area").className = "hidden";
+    }
+  }
+</script>
+</body>
+</html>
