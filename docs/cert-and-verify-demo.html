@@ -148,8 +148,8 @@
 
   function setup() {
       try {
-        setupUbirchCertification();
         setupUbirchVerification();
+        setupUbirchCertification();
         setFormVisibility(true);
       } catch (e) {
         window.alert(e.message);
