@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
@@ -9,7 +10,7 @@ module.exports = function (env) {
   return {
     mode: MODE,
     entry: {
-      certification: './certification.ts'
+      index: './index.ts'
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -37,6 +38,9 @@ module.exports = function (env) {
       extensions: ['.js', '.ts']
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        process: 'process',
+      }),
       new HtmlWebpackPlugin({
         filename: 'index.html',
         template: './index.html'
@@ -48,6 +52,10 @@ module.exports = function (env) {
       new HtmlWebpackPlugin({
         filename: 'cert-and-verify.html',
         template: './pages/cert-and-verify.html'
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'cert-and-verify-demo.html',
+        template: './docs/cert-and-verify-demo.html'
       }),
       new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     ],
