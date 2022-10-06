@@ -1,6 +1,6 @@
 import { EUbirchCertificationStateKeys, IUbirchCertificationResult, UbirchCertification } from './node_modules/@ubirch/ubirch-certification-js';
 import { EUbirchVerificationStateKeys, IUbirchVerificationResult } from '@ubirch/ubirch-verification-js';
-import environment from './environment.dev';
+import environment from './environment';
 import { EUbirchHashAlgorithms, EUbirchStages, UbirchVerification } from './node_modules/@ubirch/ubirch-verification-js';
 
 let ubirchCertification;

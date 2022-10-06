@@ -13,8 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/express-serve-static-core": "^4.17.30",
-    "@ubirch/ubirch-certification-js": "^0.2.0",
+    "@types/express-serve-static-core": "4.17.30",
+    "@ubirch/ubirch-certification-js": "^0.3.3",
     "@ubirch/ubirch-verification-js": "^2.0.0",
     "browserify-zlib": "^0.2.0",
     "crypto-browserify": "^3.12.0",
@@ -25,7 +25,6 @@
   "devDependencies": {
     "@types/js-sha512": "^0.7.0",
     "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^3.5.3",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",

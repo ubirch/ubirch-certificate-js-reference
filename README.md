@@ -10,6 +10,10 @@ Currently the following types of UPPs can be created by the
 
 * SIGNED
 
+## Documentation with Live Demo
+
+Documentation with live demo can be found here [ubirch-certificate-js-reference Documentation](https://developer.ubirch.com/ubirch-certificate-js-reference)
+
 ## Specification
 
 ![UBIRCH self-contained certificate specification](docs/ubirch_certificate-Certificate-Spec.png)
